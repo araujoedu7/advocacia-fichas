@@ -1,0 +1,39 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client" // Pasta simples dentro de prisma/
+}
+
+datasource db {
+  provider = "sqlite"
+  // NÃO coloque url aqui (vem do .env via prisma.config.ts)
+}
+
+model Client {
+  id            Int       @id @default(autoincrement())
+  name          String
+  birthDate     DateTime?
+  rg            String?   @unique
+  cpf           String?   @unique
+  address       String?
+  phone         String?
+  email         String?
+  maritalStatus String?
+  nationality   String?   @default("Brasileira")
+  profession    String?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  updates CaseUpdate[]
+}
+
+model CaseUpdate {
+  id          Int      @id @default(autoincrement())
+  clientId    Int
+  date        DateTime @default(now())
+  description String
+  status      String?
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
